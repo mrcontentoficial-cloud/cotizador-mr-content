@@ -4,8 +4,50 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Cotizador Mr Content</title>
+<style id="mcGateCss">
+#mcGate{position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:20px;background:#000;background-image:radial-gradient(900px 500px at 80% -10%,rgba(155,127,212,.18),transparent 60%),radial-gradient(700px 400px at -10% 20%,rgba(199,125,255,.10),transparent 55%);font-family:'Poppins',sans-serif}
+#mcGate .gbox{width:min(92vw,380px);background:#0e0c14;border:1px solid #1c1a24;border-radius:20px;padding:34px 28px;text-align:center;box-shadow:0 30px 80px -30px rgba(155,127,212,.5)}
+#mcGate .gk{font-family:'Bebas Neue',sans-serif;letter-spacing:.3em;color:#b89dee;font-size:12px;margin-bottom:14px}
+#mcGate h2{font-family:'Coolvetica','Bebas Neue',sans-serif;font-weight:400;font-size:32px;color:#fff;margin:0 0 8px}
+#mcGate p{color:#8b8794;font-size:13px;margin:0 0 20px;line-height:1.5}
+#mcGate input{width:100%;background:#070610;border:1px solid #1c1a24;color:#fff;border-radius:11px;padding:12px 14px;font-family:'Poppins';font-size:15px;text-align:center;letter-spacing:.08em}
+#mcGate input:focus{outline:none;border-color:#9b7fd4;box-shadow:0 0 0 3px rgba(155,127,212,.18)}
+#mcGate button{width:100%;margin-top:12px;border:none;border-radius:11px;padding:13px;font-family:'Bebas Neue',sans-serif;letter-spacing:.08em;font-size:18px;color:#fff;cursor:pointer;background:linear-gradient(100deg,#6f4fb3,#c77dff)}
+#mcGate button:hover{filter:brightness(1.12)}
+#mcGate .gerr{color:#ff5c7a;font-size:12.5px;margin-top:11px;min-height:16px}
+body.mc-locked{overflow:hidden}
+</style>
 </head>
 <body>
+<div id="mcGate">
+  <form class="gbox" onsubmit="return mcCheck(event)">
+    <div class="gk">MR CONTENT &middot; AREA PRIVADA</div>
+    <h2>Cotizador</h2>
+    <p>Esta herramienta es privada. Ingresa la contrase&ntilde;a para entrar.</p>
+    <input id="mcPass" type="password" placeholder="Contrase&ntilde;a" autocomplete="current-password" autofocus>
+    <button type="submit">Entrar &rarr;</button>
+    <div class="gerr" id="mcErr"></div>
+  </form>
+</div>
+<script id="mcGateJs">
+(function(){
+  var HASH="e3abba86e54421ca2a81cfaa67cf671a47b401ae1e2f82feeea3ac3018689265";
+  function unlock(){var g=document.getElementById('mcGate');if(g)g.parentNode.removeChild(g);document.body.classList.remove('mc-locked');}
+  function lock(){document.body.classList.add('mc-locked');}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',lock);else lock();
+  if(sessionStorage.getItem('mc_gate_ok')==='1'){unlock();return;}
+  window.mcCheck=function(e){
+    e.preventDefault();
+    var v=(document.getElementById('mcPass').value||'');
+    crypto.subtle.digest('SHA-256',new TextEncoder().encode(v)).then(function(buf){
+      var hex=Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,'0');}).join('');
+      if(hex===HASH){sessionStorage.setItem('mc_gate_ok','1');unlock();}
+      else{document.getElementById('mcErr').textContent='Contrase\u00f1a incorrecta.';var p=document.getElementById('mcPass');p.value='';p.focus();}
+    });
+    return false;
+  };
+})();
+</script>
 <style>
 /* latin-ext */
 @font-face {
